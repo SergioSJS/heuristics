@@ -74,3 +74,18 @@ def menu_AG():
             break
     return escolha
 
+'''
+Menu de Busca Local
+'''
+def menu_busca_local():
+    while True:
+        print("************Geracao de Busca Local**************** ")
+        print("                1. Descida com Best Improvement ")
+        print("                2. Descida randomica ")
+        print("                3. Descida com Primeiro de Melhora (First Improvement) ")
+        print("                0. Voltar ")
+        escolha = input('Escolha: ')
+        escolha = int(escolha)
+        if escolha >= 0 or escolha <= 3:
+            break
+    return escolha

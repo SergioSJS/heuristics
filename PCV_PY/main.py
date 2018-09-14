@@ -25,6 +25,8 @@ from Descida import descida, \
             descida_randomica, \
             descida_primeiro_melhora
 
+from ILS import ILS
+
 from SimulatedAnnealing import calcula_temperatura_inicial, \
             SimulatedAnnealing
 
@@ -128,8 +130,22 @@ def main():
             break
         # Iterated Local Search
         elif escolha == 8:
-            print("Nao implementado")
-            break
+            inicio_CPU = time.clock()
+ 
+            buscaLocal = Menus.menu_busca_local()
+            if buscaLocal == 1:
+                fo, s = ILS(s,d, 15, 30, descida)
+            elif buscaLocal == 2:
+                it = 0.7*(n*(n-1)/2)
+                fo, s = ILS(s,d, 15, 30, descida_randomica, it)
+            elif buscaLocal == 3:
+                fo, s = ILS(s,d, 15, 30, descida_primeiro_melhora)            
+            
+            fim_CPU = time.clock()
+            print("Solucao obtida usando a estrategia Iterated Local Search:")
+            imprime_rota(s)
+            print("Funcao objetivo = {}".format(fo))
+            print("Tempo de CPU = {} segundos:".format((fim_CPU - inicio_CPU)))
         # GRASP
         elif escolha == 9:
             grasp_op = Menus.menu_GRASP()
