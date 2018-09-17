@@ -10,7 +10,7 @@ def perturbacao(s, nivel):
     nTrocas = 0
     n = len(s)
 
-    while nTrocas < nivel:
+    while nTrocas <= nivel:
         nTrocas += 1
         # Escolhe um vizinho qualquer
         j = np.random.randint(n)
