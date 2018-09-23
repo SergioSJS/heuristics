@@ -25,6 +25,8 @@ from Descida import descida, \
             descida_randomica, \
             descida_primeiro_melhora
 
+from BuscaTabu import BuscaTabu
+
 from ILS import ILS
 
 from SimulatedAnnealing import calcula_temperatura_inicial, \
@@ -119,15 +121,23 @@ def main():
             fo = SimulatedAnnealing(s,d,0.99,2*n,temp_inicial,0.01)
 
             fim_CPU = time.clock()
-            print("Solucao obtida usando a estrategia Best Improvement do Metodo da Descida:")
+            print("Solucao obtida usando a estrategia Simulated Annealing:")
             imprime_rota(s)
             print("Funcao objetivo = {}".format(fo))
             print("Tempo de CPU = {} segundos:".format((fim_CPU - inicio_CPU)))
 
         # Busca Tabu
         elif escolha == 7:
-            print("Nao implementado")
-            break
+            inicio_CPU = time.clock()
+            fo, s = BuscaTabu(s, d, 20, 2000)
+            fim_CPU = time.clock()
+
+            print("Solucao obtida usando a estrategia Busca Tabu:")
+            imprime_rota(s)
+            print("Funcao objetivo = {}".format(fo))
+            print("Tempo de CPU = {} segundos:".format((fim_CPU - inicio_CPU)))
+
+
         # Iterated Local Search
         elif escolha == 8:
             inicio_CPU = time.clock()
