@@ -72,6 +72,7 @@ def BuscaTabu(s, d, duracao, bt_max):
         fo_viz, melhor_j, melhor_i = lista_candidatos(s, d, fo, fo_star, lista_tabu, iter, duracao)
 
         lista_tabu[melhor_j][melhor_i] = iter+duracao
+        lista_tabu[melhor_i][melhor_j] = iter+duracao
 
         # Faz o movimento
         s[melhor_j], s[melhor_i] = s[melhor_i], s[melhor_j]

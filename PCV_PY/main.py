@@ -32,15 +32,18 @@ from ILS import ILS
 from SimulatedAnnealing import calcula_temperatura_inicial, \
             SimulatedAnnealing
 
+from GRASP import GRASP
+
 def main():
     fo = 0.0 # funcao objetivo corrente
     # clock_t 
     inicio_CPU = 0.0 # clock no inicio da aplicacao do metodo
     fim_CPU  = 0.0 # clock no final da aplicacao do metodo
 
-    n, melhor_fo_lit = obter_parametros_pcv("C50INFO.TXT") # n = numero de cidades; melhor_fo_lit = melhor fo da literatura
+    n, melhor_fo_lit = 280, 0#obter_parametros_pcv("C50INFO.TXT") # n = numero de cidades; melhor_fo_lit = melhor fo da literatura
     s = np.empty([n], dtype=int) # vetor solucao
-    d = le_arq_matriz("C50.TXT") # matriz de distancias
+    #d = le_arq_matriz("C50.TXT") # matriz de distancias
+    d = le_arq_matriz("A280.TXT") # matriz de distancias
     
     while True:
         escolha = Menus.menu_principal()
@@ -117,7 +120,7 @@ def main():
         elif escolha == 6:
             inicio_CPU = time.clock()
 
-            temp_inicial = calcula_temperatura_inicial(s,d,1.1,0.95,500)
+            temp_inicial = calcula_temperatura_inicial(s,d,1.1,0.95,500)            
             fo = SimulatedAnnealing(s,d,0.99,2*n,temp_inicial,0.01)
 
             fim_CPU = time.clock()
@@ -129,7 +132,7 @@ def main():
         # Busca Tabu
         elif escolha == 7:
             inicio_CPU = time.clock()
-            fo, s = BuscaTabu(s, d, 20, 2000)
+            fo, s = BuscaTabu(s, d, 15, 5000)
             fim_CPU = time.clock()
 
             print("Solucao obtida usando a estrategia Busca Tabu:")
@@ -161,8 +164,14 @@ def main():
             grasp_op = Menus.menu_GRASP()
             # Geracao Parcialmente gulosa de uma solucao inicial via metodo do vizinho mais proximo
             if grasp_op == 1:
-                print("Nao implementado")
-                break
+                inicio_CPU = time.clock()
+                print("Solucao gerada pelo Metodo GRASP:")
+                fo, s = GRASP(s, d, 0.05, 100)
+                imprime_rota(s)
+                fim_CPU = time.clock()
+
+                print("Funcao objetivo = {}".format(fo))
+                print("Tempo de CPU = {} segundos:".format((fim_CPU - inicio_CPU)))
             # Geracao parcialmente gulosa de uma solucao inicial via metodo da insercao mais barata
             elif grasp_op == 2:
                 print("Nao implementado")

@@ -39,23 +39,23 @@ def constroi_solucao_gulosa_vizinho_mais_proximo(s, d):
 '''
 Constroi uma solucao parcialmente gulosa pelo metodo do vizinho mais proximo
 '''
-def constroi_solucao_parcialmente_gulosa_vizinho_mais_proximo(s, d, alpha):
+def constroi_solucao_parcialmente_gulosa_vizinho_mais_proximo(s, d, alpha, verbose=1):
      # Inicio da Fase de Construcao de uma solucao
-    print("Construindo nova solucao ...")
+    if verbose:
+        print("Construindo nova solucao ...")
 
     lista_c = []
     for j in range(1, len(s)):
         lista_c.append([j, 0, 0.0])
 
     s[0] = 0 # A cidade origem é a cidade 0
-    
     for j in range(1, len(s)):
         # Apaga a lista de candidatos ordenada
         LC_ordenada = []
         for i, registro in enumerate(lista_c):
             nao_visitada = []
-            nao_visitada.append(registro[0])
-            nao_visitada.append(registro[1])
+            nao_visitada.append(registro[0]) # destino
+            nao_visitada.append(registro[1]) # distância
             nao_visitada.append(d[s[j-1]][nao_visitada[0]])
             # inserir um registro de forma ordenada em uma lista
             hq.heappush(LC_ordenada, (nao_visitada[2], nao_visitada))
@@ -72,7 +72,8 @@ def constroi_solucao_parcialmente_gulosa_vizinho_mais_proximo(s, d, alpha):
         for i, l in enumerate(lista_c):
             if l[0] == cidade_escolhida:
                 lista_c.pop(i)
-                break        
+                break
+    
 '''
 Constroi uma solucao pela inserção mais barata
 '''
