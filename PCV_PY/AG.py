@@ -8,9 +8,11 @@ from Descida import descida, \
             descida_primeiro_melhora
 
 import numpy as np
+
+from GRASP import GRASP
 # vnd 
 def AG(s, d, nind, max_desvio, prob_crossover, prob_mutacao, tipo_operador):
-
+	randFather = 2 # 0 = random, 1 = escolhe o melhor entre 2 aleatórios, 2 = roleta
 	n = len(s)
 	fo_star = float('inf')
 
@@ -29,12 +31,13 @@ def AG(s, d, nind, max_desvio, prob_crossover, prob_mutacao, tipo_operador):
 
 	# Geracao da populacao inicial
 	for j in range(int(nind/2)):
-		# GRASP(n, pop[j], d, 0.10, 10, 1);
-		constroi_solucao(pop[j])
-		np.random.shuffle(pop[j])
+		#GRASP(pop[j], d, 0.10, 10, 1)
 
-		# constroi_solucao_parcialmente_gulosa_vizinho_mais_proximo(pop[j], d, 0.05);
-		# constroi_solucao_parcialmente_gulosa_insercao_mais_barata(pop[j], d, 0.05);
+		#constroi_solucao(pop[j])
+		#np.random.shuffle(pop[j])
+		constroi_solucao_parcialmente_gulosa_vizinho_mais_proximo(pop[j], d, 0.05, 0)
+		# constroi_solucao_parcialmente_gulosa_vizinho_mais_proximo(pop[j], d, 0.05, 0);
+		# constroi_solucao_parcialmente_gulosa_insercao_mais_barata(pop[j], d, 0.05, 0);
 		fo_pop[j] = calcula_fo(pop[j], d)
 		
 		if (fo_pop[j] < fo_star):
@@ -51,10 +54,18 @@ def AG(s, d, nind, max_desvio, prob_crossover, prob_mutacao, tipo_operador):
 		quant_filhos = 0
 		while quant_filhos < nind/2:			
 			# Selecao aleatoria de pais
-			jpai1 = np.random.randint(nind/2)
-			jpai2 = np.random.randint(nind/2)
-			while(jpai1 == jpai2):
+			if randFather == 0:
+				jpai1 = np.random.randint(nind/2)
 				jpai2 = np.random.randint(nind/2)
+				while(jpai1 == jpai2):
+					jpai2 = np.random.randint(nind/2)
+			elif randFather == 1:
+				fathers = melhorEntreDois(nind, fo_pop, 2)
+				jpai1 = fathers[0]
+				jpai2 = fathers[1]
+			elif randFather == 2:
+				jpai1 = roleta(int(nind/2), fo_pop)
+				jpai2 = roleta(int(nind/2), fo_pop)
 
 			if (np.random.random() < prob_crossover):
 				'''
@@ -62,6 +73,9 @@ def AG(s, d, nind, max_desvio, prob_crossover, prob_mutacao, tipo_operador):
 				descida_primeiro_melhora(pop[jpai1],d)
 				descida_primeiro_melhora(pop[jpai2],d)
 				'''
+				descida_primeiro_melhora(pop[jpai1],d)
+				descida_primeiro_melhora(pop[jpai2],d)
+
 				if tipo_operador == 1:							
 					crossover_OX(pop[jpai1], pop[jpai2], pop[quant_filhos+int(nind/2)], pop[quant_filhos+int(nind/2)+1], n)					
 				if tipo_operador == 2:
@@ -112,13 +126,32 @@ def AG(s, d, nind, max_desvio, prob_crossover, prob_mutacao, tipo_operador):
 		fo_pop_sobrev = np.zeros(int(nind/2), dtype=int)
 		
 		# Calcular o desvio padrão das fos da população
-		desvio = np.std(fo_pop) # calcula_desvio_padrao(fo_pop,nind/2)
+		desvio = np.std(fo_pop[0:int(nind/2)+1]) # calcula_desvio_padrao(fo_pop,nind/2)
+		print(desvio)
+		print(fo_pop[0:int(nind/2)])
+
+		
 
 	s = s_star.copy()
 	fo = fo_star
 	print("Numero de geracoes avaliadas: {:d}".format(ngeracoes))
 
 	return fo, s
+
+def melhorEntreDois(nind, fo_pop, quant=1):
+	result = []
+	for i in range(quant):
+		temp1 = np.random.randint(nind/2)
+		temp2 = np.random.randint(nind/2)
+		while(temp1 == temp2):
+			temp2 = np.random.randint(nind/2)
+
+		if fo_pop[temp1] >= fo_pop[temp2]:
+			result.append(temp1)
+		else:
+			result.append(temp2)
+	return result
+			
 
 # Esta rotina devolve o individuo escolhido pelo mecanismo da roleta
 def roleta(nind, fo_pop):
@@ -135,7 +168,7 @@ def roleta(nind, fo_pop):
 		if fo_pop[j] > fo_max:
 			fo_max = fo_pop[j]
 	# tratar divisao por zero
-	tg_alfa = 100 / (fo_max - fo_min)
+	tg_alfa = 100 / (fo_max - fo_min + 1)
 
 	for j in range(nind):
 		faptidao[j] = tg_alfa * (fo_max - fo_pop[j])
@@ -147,8 +180,10 @@ def roleta(nind, fo_pop):
 	}
 	'''
 
-	for j in range(nind):
-		fracao[j] = faptidao[j] / soma
+	fracao = faptidao / soma
+
+	'''for j in range(nind):
+		fracao[j] = faptidao[j] / soma'''
 
 	escala[0] = fracao[0]
 
