@@ -34,16 +34,18 @@ from SimulatedAnnealing import calcula_temperatura_inicial, \
 
 from GRASP import GRASP
 
+from AG import AG
+
 def main():
     fo = 0.0 # funcao objetivo corrente
     # clock_t 
     inicio_CPU = 0.0 # clock no inicio da aplicacao do metodo
     fim_CPU  = 0.0 # clock no final da aplicacao do metodo
 
-    n, melhor_fo_lit = 280, 0#obter_parametros_pcv("C50INFO.TXT") # n = numero de cidades; melhor_fo_lit = melhor fo da literatura
+    n, melhor_fo_lit = obter_parametros_pcv("C50INFO.TXT")#obter_parametros_pcv("C50INFO.TXT") # n = numero de cidades; melhor_fo_lit = melhor fo da literatura
     s = np.empty([n], dtype=int) # vetor solucao
-    #d = le_arq_matriz("C50.TXT") # matriz de distancias
-    d = le_arq_matriz("A280.TXT") # matriz de distancias
+    d = le_arq_matriz("C50.TXT") # matriz de distancias
+    #d = le_arq_matriz("A280.TXT") # matriz de distancias
     
     while True:
         escolha = Menus.menu_principal()
@@ -186,15 +188,28 @@ def main():
             break
         # Algoritmos Geneticos
         elif escolha == 12:
-            grasp_op = Menus.menu_AG()
+            ag_op = Menus.menu_AG()
             # Algoritmos Geneticos usando operador OX
-            if grasp_op == 1:
-                print("Nao implementado")
-                break
+            if ag_op == 1:
+                inicio_CPU = time.clock()
+                fo, s = AG(s,d,100,0.03,0.85,0.01,1)
+                fim_CPU = time.clock()
+
+                print("Solucao por AG usando operador OX:")
+                print("fo = {:10.2f} ".format(fo))
+                print("Tempo de execução = {:10.2f} segundos".format(fim_CPU - inicio_CPU))
+                imprime_rota(s)
+                
             # Algoritmos Geneticos usando operador ERX
-            elif grasp_op == 2:
-                print("Nao implementado")
-                break        
+            elif ag_op == 2:
+                inicio_CPU = time.clock()
+                fo, s = AG(s,d,100,0.03,0.85,0.01,2)
+                fim_CPU = time.clock()
+
+                print("Solucao por AG usando operador ERX:")
+                print("fo = {:10.2f} ".format(fo))
+                print("Tempo de execução = {:10.2f} segundos".format(fim_CPU - inicio_CPU))
+                imprime_rota(s)        
         # Algoritmos Memeticos
         elif escolha == 13:
             print("Nao implementado")
