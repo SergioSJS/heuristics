@@ -126,12 +126,8 @@ def AG(s, d, nind, max_desvio, prob_crossover, prob_mutacao, tipo_operador):
 		fo_pop_sobrev = np.zeros(int(nind/2), dtype=int)
 		
 		# Calcular o desvio padrão das fos da população
-		desvio = np.std(fo_pop[0:int(nind/2)+1]) # calcula_desvio_padrao(fo_pop,nind/2)
-		print(desvio)
-		print(fo_pop[0:int(nind/2)])
-
+		desvio = np.std(fo_pop[0:int(nind/2)]) # calcula_desvio_padrao(fo_pop,nind/2)
 		
-
 	s = s_star.copy()
 	fo = fo_star
 	print("Numero de geracoes avaliadas: {:d}".format(ngeracoes))
